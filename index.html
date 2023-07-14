@@ -4,54 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
     </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
-    <h1>League Widget Usage Example</h1>
-    
-    <league-events leagueId="1000094985" drawText="draw" winText="to win">No Matches currently avaliable</league-events>
-<!-- 
-    <div class="league">
-        <div class="league__title">Premier League</div>
-        <div class="event__list">
-            <div class="event">
-                <div class="event__title">West Ham - Burnley</div>
-                <div class="event__date">2020-11-08</div>
-                <div class="event__time">16:30</div>
-                <div class="event__state">LIVE</div>
-                <div class="outcomes">
-                    <div class="home">
-                        <div class="name">West Ham</div>
-                        <span class="odds"><a href="url" target="lancebet">1.50</a></span>
-                    </div>
-                    <div class="draw">
-                        <div class="name">x</div>
-                        <span class="odds"><a href="url" target="lancebet">2.0</a></span>
-                    </div>
-                    <div class="away">
-                        <div class="name">Burnley</div>
-                        <span class="odds"><a href="url" target="lancebet">2.50</a></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    West Ham - Burnley      LIVE    2020-11-08 16:30
-    West Ham to win   1.50    Draw 2.0     Burnley to win 2.50
-
-
-        
-
-    <p>Thanks for watching</p>  
-
-
-    exampe:
-
-    West Ham - Burnley    LIVE    2020-11-08 16:30 -->
-
+    <h1>Premier League</h1>
+    <league-events leagueId="1000094985" loadingText="Loading..." drawText="draw" winText="to win">No Matches currently avaliable</league-events>
     <script src="./js/league.js"></script>
 </body>
 

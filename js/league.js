@@ -2,11 +2,32 @@ const template = document.createElement('template');
 
 /****
  * 
- * usage: <league-events drawText="draw" winText="win" leagueId="1000000000">no events text</league-events>
- * 
+ * usage:    <league-events leagueId="1000094985" loadingText="Loading..." drawText="draw" winText="to win">No Matches currently avaliable</league-events>
+ *
  ***/
 
 template.innerHTML = `
+    <style>
+        .event_data {
+            border: 1px solid #ccc;
+            margin: 5px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .event_name {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .event_date {
+             padding-left: 10px;
+         }
+
+        .bet_offers {
+            display: grid;
+            grid-auto-rows: 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+    </style>
     <div id ="league">
     </div>
   `
@@ -21,8 +42,8 @@ class League extends HTMLElement {
     nonProdUrl = "https://graphql.cts.kambicdn.com"
     prodUrl = "https://graphql.kambicdn.com"
 
-    nonProdTarget = "https://lancebet-com-uat.eyasgaming.net"
-    prodTarget = "https://www.lancebet.com"
+    nonProdTarget = "https://lancebet-com-uat.eyasgaming.net/home"
+    prodTarget = "https://www.lancebetting.com/home"
 
     constructor() {
         super();
@@ -40,9 +61,22 @@ class League extends HTMLElement {
         return this.getAttribute('leagueId');
     }
 
+    get winText() {
+        return this.getAttribute('winText');
+    }
+
+    get drawText() {
+        return this.getAttribute('drawText');
+    }
+
+    get loadingText() {
+        return this.getAttribute('loadingText');
+    }
+
+
     connectedCallback() {
         this.$league = this._shadowRoot.querySelector('#league');
-        this.$league.innerHTML = "...";
+        this.$league.innerHTML = this.loadingText;
      //   this.$odds.href = this.target + "?affiliateId=" + this.affiliateId // default url in case no odds found.
         this.getEvents(this.leagueId);
     }
@@ -126,7 +160,7 @@ class League extends HTMLElement {
             }
         ).then((response) => response.json())
          .then((data) => this.renderLeage(data.data.event.events))
-      //   .catch((error) => this.$league.innerHTML = this.textContent);
+         .catch((error) => this.$league.innerHTML = this.textContent);
     }
 
     renderLeage(events) {
@@ -142,14 +176,14 @@ class League extends HTMLElement {
             const $event = document.createElement('div');
             $event.className = "event_data";
 
-            const $eventTitle = document.createElement('div');
+            const $eventTitle = document.createElement('span');
             $eventTitle.innerHTML = event.name;
             $eventTitle.className = "event_name";
             $event.appendChild($eventTitle);
 
 
             var localDate = new Date(event.start);
-            const $eventDate = document.createElement('div');
+            const $eventDate = document.createElement('span');
             $eventDate.innerHTML = localDate.toLocaleString();
             $eventDate.className = "event_date";
             $event.appendChild($eventDate);
@@ -163,16 +197,25 @@ class League extends HTMLElement {
                 betOffer.outcomes.forEach((outcome) => {
                     const $outcome = document.createElement('div');
                     $outcome.className = this.getOutcomeDivName(outcome);
+
+                    const $outcomeName = document.createElement('div');
+                    $outcomeName.className = "outcome_name";
+                    $outcomeName.innerHTML = this.getOutcomeText(event, outcome);
+                    const $outcomeOdds = document.createElement('div');
+                    $outcomeOdds.className = "outcome_odds";
+
+                    const $outcomeLink = document.createElement('a');
+                    $outcomeLink.href = this.target + "?affiliateId=" + this.affiliateId + "&coupon=single|" + outcome.id + "||append|lance";
+                    $outcomeLink.innerText = (Number(outcome.odds) / 1000).toFixed(2).toLocaleString();
+                    $outcomeLink.target = "lancebet";
+
+                    $outcomeOdds.appendChild($outcomeLink);
+                    $outcome.appendChild($outcomeName);
+                    $outcome.appendChild($outcomeOdds);
                     $betOffer.appendChild($outcome);
-
-                    
-
-
                 });
-
                 $event.appendChild($betOffer);
             });
-
             this.$league.appendChild($event);
         });
     }
@@ -197,6 +240,19 @@ class League extends HTMLElement {
             return "away";
         }
     }  // getOutcomeDivName
+
+    getOutcomeText(event, outcome) {
+        if (outcome.englishLabel == "1") {
+            return event.homeName + " " + this.winText;
+        }
+        else if (outcome.englishLabel == "X") {
+            return this.drawText
+        }
+        else if (outcome.englishLabel == "2") {
+            return event.awayName + " " + this.winText;
+        }
+
+    }
 
 
 }
