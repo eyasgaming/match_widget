@@ -36,7 +36,7 @@ class League extends HTMLElement {
 
     // You can edit these:
     prod = false;
-    affiliateId = "AY2838324479"
+    affiliateId = "AN2548500601"
 
     // Do not edit anyething below this line
     nonProdUrl = "https://graphql.cts.kambicdn.com"
