@@ -6,7 +6,7 @@ See index.html for example.
 
 1. Add this where ever you want to have the list of events for a league:
 
-   ```<league-events leagueId="1000094985" loadingText="Loading..." drawText="draw" winText="to win">No Matches currently avaliable</league-events>```
+   ```<league-events leagueId="1000094985" prod="true" loadingText="Loading..." drawText="draw" winText="to win">No Matches currently avaliable</league-events>```
 
 2. Add this (or a minified version of it) at the end of the body tag
    ```<script src="./js/league.js"></script>```
@@ -20,6 +20,7 @@ Key:
 * drawText = text to show next to the draw price.
 * winText = text to show after the home or away team.
 * inner text = message to display if there are no leagues, or an error occured.
+* prod = true or false, false is non prod (different kambi data and points to our UAT site)
 
 # Styling
 The component will render with the pages default font (e.g. specified in body style).
