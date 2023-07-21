@@ -493,6 +493,10 @@ class League extends HTMLElement {
 
             event.betOffers.forEach((betOffer) => {
 
+                if (betOffer.betOfferType.englishName !== "Match") {
+                    return;
+                }
+
 
                 const $betOffer = document.createElement('div');
                 $betOffer.className = "bet_offers";
@@ -511,7 +515,6 @@ class League extends HTMLElement {
                     const teamValue = $outcome.className === "home" ? "home" : "away";
                     const teamName = event[`${teamValue}Name`]?.toLowerCase().replace(/\s/g, '-') || '';
                     const outcomeText = this.getOutcomeText(event, outcome);
-
                     const words = outcomeText.split(' ');
                     const outcomeText2 = words.slice(-2).join(' ');
 
@@ -602,6 +605,8 @@ class League extends HTMLElement {
         }
         else if (outcome.englishLabel == "2") {
             return event.awayName + " " + this.winText;
+        } else {
+            console.error("Outcome text not found for outcome: ", outcome, " and event: ", event);
         }
 
     }
