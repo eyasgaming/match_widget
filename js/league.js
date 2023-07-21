@@ -171,8 +171,6 @@ template.innerHTML = `
 
 class League extends HTMLElement {
 
-    // You can edit these:
-    prod = false;
     affiliateId = "AN2548500601"
 
     // Do not edit anyething below this line
@@ -203,6 +201,11 @@ class League extends HTMLElement {
 
     get leagueId() {
         return this.getAttribute('leagueId');
+    }
+
+    // should be "true" or "false"
+    get prod() {
+        return this.getAttribute('prod');
     }
 
     get winText() {
@@ -525,7 +528,7 @@ class League extends HTMLElement {
 
                     //Home or away shirt
 
-                    const imageUrlFinal = `https://lancebet-com-prod.eyasgaming.net/content/dam/eyas-web/images/team-colours/football/england/${teamName}-${teamValue}.png`
+                    const imageUrlFinal = `https://lancebet-com-prod.eyasgaming.net/content/dam/eyas-web/images/team-colours/football/${teamName}-${teamValue}.png`
 
                     const imageUrlFinalAux = `https://lancebet-com-prod.eyasgaming.net/content/dam/eyas-web/images/team-colours/football/generic-${teamValue}.png`;
 
@@ -573,9 +576,6 @@ class League extends HTMLElement {
     }
 
     renderPrice(price) {
-        console.log("prod: " + this.prod)
-        console.log("url: " + this.url)
-        console.log("target: " + this.target)
 
         this.$odds.innerHTML = (Number(price) / 1000).toFixed(2).toLocaleString();
         this.$odds.href = this.target + "?affiliateId=" + this.affiliateId + "&coupon=single|" + this.id + "||append|lance";
