@@ -227,15 +227,6 @@ class League extends HTMLElement {
         //   this.$odds.href = this.target + "?affiliateId=" + this.affiliateId // default url in case no odds found.
         this.getEvents(this.leagueId);
 
-        const $container = document.createElement('div');
-        $container.style.position = 'relative';
-        $container.innerText = 'Inglaterra - Premier League';
-        $container.style.marginLeft = '5px';
-        $container.style.marginBottom = '20px';
-        $container.style.fontSize = '25px';
-        $container.style.fontWeight = '600';
-        $container.style.color = '#06379d';
-
         const imageUrls = [
             'icons/table.png',
             'icons/slider.png',
@@ -272,7 +263,6 @@ class League extends HTMLElement {
         $container2.appendChild(this.$league);
 
         // Add to container to shadow DOM
-        this._shadowRoot.appendChild($container);
         this._shadowRoot.appendChild($container2);
 
     }
