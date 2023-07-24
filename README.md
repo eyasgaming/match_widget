@@ -30,3 +30,6 @@ You can stlye any component by targeting it under #shaddow-root with external CS
 # Limitations
 1. This will only work for 1x2 matches.  It wont work for other markets or sports.
 1. You specify the league name above the web component.
+
+# Testing
+New merges to main will be deployed to https://wonderful-plant-00df5e403.3.azurestaticapps.net/
