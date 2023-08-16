@@ -13,7 +13,7 @@ template.innerHTML = `
         --blue: #06379d;
       }
       
-      #league {
+      #match {
         display: flex;
         flex-wrap: wrap;
       }
@@ -22,6 +22,7 @@ template.innerHTML = `
         width: calc(50% - 20px);
         min-width: 532px;
         flex-grow: 1;
+        max-width: 532px;
         flex-direction: column;
         margin: 5px;
         padding: 5px;
@@ -94,7 +95,7 @@ template.innerHTML = `
         text-overflow: ellipsis;
         white-space: nowrap;
         font-weight: 800;
-        margin-left: 16%;
+        margin-left: 12%;
         text-overflow: ellipsis;
         white-space: normal;
         max-width: 150px;
@@ -135,41 +136,13 @@ template.innerHTML = `
       button img:hover {
         transform: rotate(180deg);
       }
-      
-      @media screen and (max-width: 768px) {
-        .event_name {
-          font-size: 14px;
-          white-space: nowrap;
-          max-width: 150px;
-        }
-      
-        .event_date {
-          font-size: 13px;
-        }
-      
-        .outcome_shirts {
-          margin-left: 36%;
-        }
-      }
-      
-      @media screen and (min-width: 768px) and (max-width: 900px) {
-        .outcome_shirts {
-          margin-left: 28%;
-        }
-      }
-      
-      @media screen and (min-width: 900px) {
-        .outcome_shirts {
-          margin-left: 29%;
-        }
-      }
     </style>
-    <div id ="league" >
+    <div id ="match" >
     
     </div>
   `
 
-class League extends HTMLElement {
+class Match extends HTMLElement {
 
     affiliateId = "AN2548500601"
 
@@ -198,9 +171,10 @@ class League extends HTMLElement {
         //  this.leagueId = this.getAttribute('leagueId');
     }
 
+    
 
-    get leagueId() {
-        return this.getAttribute('leagueId');
+    get matchId() {
+        return this.getAttribute('matchId');
     }
 
     // should be "true" or "false"
@@ -222,16 +196,10 @@ class League extends HTMLElement {
 
 
     connectedCallback() {
-        this.$league = this._shadowRoot.querySelector('#league');
-        this.$league.innerHTML = this.loadingText;
+        this.$match = this._shadowRoot.querySelector('#match');
+        this.$match.innerHTML = this.loadingText;
         //   this.$odds.href = this.target + "?affiliateId=" + this.affiliateId // default url in case no odds found.
-        this.getEvents(this.leagueId);
-
-        const imageUrls = [
-            'icons/table.png',
-            'icons/slider.png',
-            // Add more image URLs as needed
-        ];
+        this.getEvents(this.matchId);
 
         let currentImageIndex = 0;
 
@@ -259,8 +227,8 @@ class League extends HTMLElement {
 
 
         // Add #league to container
-        this.$league = this._shadowRoot.querySelector('#league');
-        $container2.appendChild(this.$league);
+        this.$match = this._shadowRoot.querySelector('#match');
+        $container2.appendChild(this.$match);
 
         // Add to container to shadow DOM
         this._shadowRoot.appendChild($container2);
@@ -270,72 +238,64 @@ class League extends HTMLElement {
     changeStyles() {
 
         if (!this.stylesChanged) {
-            console.log("cambiando estilos")
-            this.$league.style.display = 'flex';
-            this.$league.style.flexWrap = 'nowrap';
-            this.$league.style.overflowX= 'auto';
-
-            
+            this.$match.style.display = 'flex';
+            this.$match.style.flexWrap = 'nowrap';
+            this.$match.style.overflowX= 'auto';
 
 
-            const eventItems = this.$league.querySelectorAll('.event_data');
-            eventItems.forEach(item => {
-                console.log("cambiando estilwdwdos")
-            });
-
-            const eventName = this.$league.querySelectorAll('.event_name');
+            const eventName = this.$match.querySelectorAll('.event_name');
             eventName.forEach(item => {
                 
                 
             });
 
-            const outcomeDate = this.$league.querySelectorAll('.event_date');
+            const outcomeDate = this.$match.querySelectorAll('.event_date');
             outcomeDate.forEach(item => {
                 
             });
 
-            const outcomeNames = this.$league.querySelectorAll('.outcome_name');
+            const outcomeNames = this.$match.querySelectorAll('.outcome_name');
             outcomeNames.forEach(item => {
                 item.style.marginLeft = '1%';
             });
 
-            const outcomeShirt = this.$league.querySelectorAll('.outcome_shirts');
+            const outcomeShirt = this.$match.querySelectorAll('.outcome_shirts');
             outcomeShirt.forEach(item => {
                 item.style.marginLeft = '25%';
             });
 
 
 
-            const outcomeOdds = this.$league.querySelectorAll('.outcome_odds');
+            const outcomeOdds = this.$match.querySelectorAll('.outcome_odds');
             outcomeOdds.forEach(item => {
                 item.style.marginLeft = '10%';
             });
 
             this.stylesChanged = true;
         } else {
-            this.$league.style.display = '';
-            this.$league.style.flexWrap = '';
+            this.$match.style.display = '';
+            this.$match.style.flexWrap = '';
 
-            const eventItems = this.$league.querySelectorAll('.event_data');
+            const eventItems = this.$match.querySelectorAll('.event_data');
             eventItems.forEach(item => {
                 item.style.width = '';
                 item.style.minWidth = '';
                 item.style.flexGrow = '';
             });
 
-            const eventName = this.$league.querySelectorAll('.event_name');
+            const eventName = this.$match.querySelectorAll('.event_name');
             eventName.forEach(item => {
                 item.style.fontSize = '';
                 item.style.whiteSpace = '';
                 item.style.maxWidth = '';
             });
 
-            const outcomeDate = this.$league.querySelectorAll('.event_date');
+            const outcomeDate = this.$match.querySelectorAll('.event_date');
             outcomeDate.forEach(item => {
                 item.style.fontSize = '';
             });
 
-            const outcomeNames = this.$league.querySelectorAll('.outcome_name');
+            const outcomeNames = this.$match.querySelectorAll('.outcome_name');
             outcomeNames.forEach(item => {
                 item.style.marginLeft = '';
                 item.style.textOverflow = '';
@@ -343,12 +303,12 @@ class League extends HTMLElement {
                 item.style.maxWidth = '';
             });
 
-            const outcomeShirt = this.$league.querySelectorAll('.outcome_shirts');
+            const outcomeShirt = this.$match.querySelectorAll('.outcome_shirts');
             outcomeShirt.forEach(item => {
                 item.style.marginLeft = '';
             });
 
-            const outcomeOdds = this.$league.querySelectorAll('.outcome_odds');
+            const outcomeOdds = this.$match.querySelectorAll('.outcome_odds');
             outcomeOdds.forEach(item => {
                 item.style.marginLeft = '';
             });
@@ -360,15 +320,17 @@ class League extends HTMLElement {
 
 
 
-    getEvents(leagueId) {
+    getEvents(matchId) {
+        console.log("matchId: ", matchId);
         const data = JSON.stringify({
             query: `
             query Event {
                 event(
                     offering: "eyasgamingbr"
                     market: "BR"
-                    groupId:` + leagueId + `
                     onlyMain: true
+                    eventIds: "${matchId}"
+
                 ) {
                     events {
                         id
@@ -441,17 +403,17 @@ class League extends HTMLElement {
             }
         ).then((response) => response.json())
             .then((data) => this.renderLeage(data.data.event.events))
-            .catch((error) => this.$league.innerHTML = this.textContent);
+            .catch((error) => this.$match.innerHTML = this.textContent);
     }
 
     renderLeage(events) {
 
         if (events == null) {
-            this.$league.innerHTML = this.textContent;
+            this.$match.innerHTML = this.textContent;
             return;
         }
 
-        this.$league.innerHTML = "";
+        this.$match.innerHTML = "";
 
         events.forEach((event) => {
             const $event = document.createElement('div');
@@ -564,7 +526,7 @@ class League extends HTMLElement {
                 });
                 $event.appendChild($betOffer);
             });
-            this.$league.appendChild($event);
+            this.$match.appendChild($event);
         });
     }
 
@@ -610,4 +572,4 @@ class League extends HTMLElement {
 
 
 
-window.customElements.define('league-events', League);
+window.customElements.define('match-card', Match);
