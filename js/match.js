@@ -140,7 +140,7 @@ template.innerHTML = `
         border-radius: 28px 28px 0 0;
         color: yellow;
         margin-left: -5px;
-        width: 443px;
+        width: 442px;
         margin-top: -5px;
     }
     
