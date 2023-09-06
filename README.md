@@ -1,5 +1,5 @@
 # match_widget
-shows event main markets for given kambi FOOTBALL league ID.
+shows event main markets for given kambi FOOTBALL match ID.
 See index.html for example.
 
 # Usage
