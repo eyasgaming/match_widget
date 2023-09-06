@@ -1,4 +1,4 @@
-# league_widget
+# match_widget
 shows event main markets for given kambi FOOTBALL league ID.
 See index.html for example.
 
@@ -6,12 +6,12 @@ See index.html for example.
 
 1. Add this where ever you want to have the list of events for a league:
 
-   ```<league-events leagueId="1000094985" prod="true" loadingText="Loading..." drawText="draw" winText="to win">No Matches currently avaliable</league-events>```
+   ```<eyas-match-container matchId="1019426498" prod="true" loadingText="Loading..." drawText="draw" winText="to win" layout="horizontal">No Matches currently avaliable</eyas-match-container>```
 
 2. Add this (or a minified version of it) at the end of the body tag
-   ```<script src="./js/league.js"></script>```
+   ```<script src="./js/match.js"></script>```
 
-3. Add league.js to your project.
+3. Add match.js to your project.
 
 Key:
 
