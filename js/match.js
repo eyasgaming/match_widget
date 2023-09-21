@@ -2,7 +2,7 @@ const template = document.createElement('template');
 
 /****
  * 
- * usage:    <league-events leagueId="1000094985" loadingText="Loading..." drawText="draw" winText="to win">No Matches currently avaliable</league-events>
+ * usage:    <eyas-match-container matchId="1019426462" prod="true" loadingText="Loading..." drawText="draw" winText="to win" layout="horizontal">No Matches currently avaliable</eyas-match-container>
  *
  ***/
 
@@ -185,6 +185,7 @@ class Match extends HTMLElement {
         this.stylesChanged = true; //to control de styles
 
 
+
         //  this.leagueId = this.getAttribute('leagueId');
     }
 
@@ -196,7 +197,7 @@ class Match extends HTMLElement {
 
     // should be "true" or "false"
     get prod() {
-        return this.getAttribute('prod');
+        return this.getAttribute('prod') !== 'false';
     }
 
     get winText() {
@@ -338,7 +339,6 @@ class Match extends HTMLElement {
 
 
     getEvents(matchId) {
-        console.log("matchId: ", matchId);
         const data = JSON.stringify({
             query: `
             query Event {
@@ -425,7 +425,7 @@ class Match extends HTMLElement {
 
     renderLeage(events) {
 
-        if (events == null) {
+        if (events == null || events.length == 0) {
             this.$match.innerHTML = this.textContent;
             return;
         }
@@ -451,14 +451,13 @@ class Match extends HTMLElement {
 
             var localDate = new Date(event.start);
 
-            // Obtener el día y el mes en formato "dd/mm"
             const day = localDate.getDate().toString().padStart(2, '0');
             const month = (localDate.getMonth() + 1).toString().padStart(2, '0');
+            const hours = localDate.getHours().toString().padStart(2, '0');
+            const minutes = localDate.getMinutes().toString().padStart(2, '0');
 
-            // Crear una cadena en formato "dd/mm"
-            const formattedDate = `${day}/${month}`;
+            const formattedDate = `${day}/${month} ${hours}:${minutes}`;
 
-            // Crear un elemento div para la fecha formateada
             const $eventDate = document.createElement('div');
             $eventDate.innerHTML = formattedDate;
             $eventDate.className = "event_date";
