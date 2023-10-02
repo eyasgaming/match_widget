@@ -3,27 +3,27 @@ const template = document.createElement('template');
 // Change special characters in PT to ASCII
 function convertPortugueseToAscii(input) {
     const portugueseToAscii = {
-      'Á': 'A', 'á': 'a',
-      'Â': 'A', 'â': 'a',
-      'À': 'A', 'à': 'a',
-      'Ã': 'A', 'ã': 'a',
-      'É': 'E', 'é': 'e',
-      'Ê': 'E', 'ê': 'e',
-      'È': 'E', 'è': 'e',
-      'Í': 'I', 'í': 'i',
-      'Î': 'I', 'î': 'i',
-      'Ì': 'I', 'ì': 'i',
-      'Ó': 'O', 'ó': 'o',
-      'Ô': 'O', 'ô': 'o',
-      'Ò': 'O', 'ò': 'o',
-      'Õ': 'O', 'õ': 'o',
-      'Ú': 'U', 'ú': 'u',
-      'Û': 'U', 'û': 'u',
-      'Ù': 'U', 'ù': 'u',
-      'Ç': 'C', 'ç': 'c'
+        'Á': 'A', 'á': 'a',
+        'Â': 'A', 'â': 'a',
+        'À': 'A', 'à': 'a',
+        'Ã': 'A', 'ã': 'a',
+        'É': 'E', 'é': 'e',
+        'Ê': 'E', 'ê': 'e',
+        'È': 'E', 'è': 'e',
+        'Í': 'I', 'í': 'i',
+        'Î': 'I', 'î': 'i',
+        'Ì': 'I', 'ì': 'i',
+        'Ó': 'O', 'ó': 'o',
+        'Ô': 'O', 'ô': 'o',
+        'Ò': 'O', 'ò': 'o',
+        'Õ': 'O', 'õ': 'o',
+        'Ú': 'U', 'ú': 'u',
+        'Û': 'U', 'û': 'u',
+        'Ù': 'U', 'ù': 'u',
+        'Ç': 'C', 'ç': 'c'
     };
     return input.replace(/[ÁáÂâÀàÃãÉéÊêÈèÍíÎîÌìÓóÔôÒòÕõÚúÛûÙùÇç]/g, match => portugueseToAscii[match] || match);
-  }
+}
 /****
  * 
  * usage:    <eyas-match-container matchId="1019426462" prod="true" loadingText="Loading..." drawText="draw" winText="to win" layout="horizontal">No Matches currently avaliable</eyas-match-container>
@@ -369,13 +369,13 @@ class Match extends HTMLElement {
                     market: "BR"
                     onlyMain: true
                     eventIds: "${matchId}"
-
                 ) {
                     events {
                         id
                         englishName
                         groupId
                         state
+                        sport
                         betOffers {
                             id
                             betOfferType {
@@ -471,7 +471,12 @@ class Match extends HTMLElement {
             $eventTest.appendChild($eventLogo);
 
 
+
+
             var localDate = new Date(event.start);
+
+            // BR local hour correction 
+            localDate.setHours(localDate.getHours() - 5);
 
             const day = localDate.getDate().toString().padStart(2, '0');
             const month = (localDate.getMonth() + 1).toString().padStart(2, '0');
@@ -505,7 +510,7 @@ class Match extends HTMLElement {
                     $outcomeName.className = "outcome_name";
                     const teamValue = $outcome.className === "home" ? "home" : "away";
 
-                    
+
                     const teamName = event[`${teamValue}Name`]?.toLowerCase().replace(/\s/g, '-') || '';
                     const asciiTeamName = convertPortugueseToAscii(teamName);
                     const outcomeText = this.getOutcomeText(event, outcome);
