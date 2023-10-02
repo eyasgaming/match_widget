@@ -1,8 +1,8 @@
 const template = document.createElement('template');
 
-// Change special characters in PT to ASCII
-function convertPortugueseToAscii(input) {
-    const portugueseToAscii = {
+// Change special characters to ASCII
+function convertEuropeanToAscii(input) {
+    const europeanToAscii = {
         'Á': 'A', 'á': 'a',
         'Â': 'A', 'â': 'a',
         'À': 'A', 'à': 'a',
@@ -20,9 +20,16 @@ function convertPortugueseToAscii(input) {
         'Ú': 'U', 'ú': 'u',
         'Û': 'U', 'û': 'u',
         'Ù': 'U', 'ù': 'u',
-        'Ç': 'C', 'ç': 'c'
+        'Ç': 'C', 'ç': 'c',
+        'Ä': 'A', 'ä': 'a',
+        'Ë': 'E', 'ë': 'e',
+        'Ï': 'I', 'ï': 'i',
+        'Ö': 'O', 'ö': 'o',
+        'Ü': 'U', 'ü': 'u',
+        'ß': 'ss',
     };
-    return input.replace(/[ÁáÂâÀàÃãÉéÊêÈèÍíÎîÌìÓóÔôÒòÕõÚúÛûÙùÇç]/g, match => portugueseToAscii[match] || match);
+    
+    return input.replace(/[ÁáÂâÀàÃãÉéÊêÈèÍíÎîÌìÓóÔôÒòÕõÚúÛûÙùÇçÄäËëÏïÖöÜüß]/g, match => europeanToAscii[match] || match);
 }
 /****
  * 
@@ -248,24 +255,6 @@ class Match extends HTMLElement {
         const $container2 = document.createElement('div');
         $container2.style.position = 'relative';
 
-        // Add button to container
-        if (!this.isHorizontalLayout) {
-            const $button = document.createElement('button');
-
-            const $img = document.createElement('img');
-            $img.src = imageUrls[currentImageIndex];
-            $button.appendChild($img);
-            $button.addEventListener('click', () => {
-                currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
-                $img.src = imageUrls[currentImageIndex];
-                this.changeStyles();
-            });
-
-            $container2.appendChild($button);
-
-        }
-        this.changeStyles();
-
 
 
         // Add #league to container
@@ -361,70 +350,52 @@ class Match extends HTMLElement {
 
 
     getEvents(matchId) {
+        const footballId = 1000093190;
         const data = JSON.stringify({
             query: `
-            query Event {
-                event(
-                    offering: "eyasgamingbr"
-                    market: "BR"
-                    onlyMain: true
-                    eventIds: "${matchId}"
-                ) {
-                    events {
-                        id
-                        englishName
-                        groupId
-                        state
-                        sport
-                        betOffers {
+                query Event {
+                    event(
+                        offering: "eyasgamingbr"
+                        market: "BR"
+                        onlyMain: true
+                        groupId: ${footballId}
+                    ) {
+                        events {
                             id
-                            betOfferType {
+                            name
+                            englishName
+                            start
+                            betOffers {
                                 id
-                                englishName
-                                name
-                            }
-                            outcomes {
-                                id
-                                englishLabel
-                                odds
-                                participant
-                                label
-                                prevOdds
-                                betOfferId
-                                oddsFractional
-                                oddsAmerican
-                                status
-                                cashOutStatus
-                                homeScore
-                                awayScore
-                                occurrence {
-                                    occurrenceType
-                                    occurrenceTypeLabel
+                                betOfferType {
+                                    id
+                                    englishName
+                                    name
+                                }
+                                outcomes {
+                                    id
+                                    englishLabel
+                                    odds
+                                    criterion {
+                                        type
+                                        name
+                                    }
+                                    betOfferId
+                                    status
+                                    
                                 }
                             }
-                            suspended
-                            closed
-                            criterion {
-                                englishLabel
-                                id
-                                lifetime
-                            }
-                        }
-                        name
-                        homeName
-                        awayName
-                        start
-                        group
-                        score {
-                            home
-                            away
-                            info
-                            who
+                            name
+                            homeName
+                            awayName
+                            start
+                            group
+                            
                         }
                     }
-                }
-            }`
+                }`
         });
+
 
 
 
@@ -441,7 +412,7 @@ class Match extends HTMLElement {
                 },
             }
         ).then((response) => response.json())
-            .then((data) => this.renderLeage(data.data.event.events))
+            .then((data) => this.renderLeage(data.data.event.events.slice(0, 100))) // Limit to the first 15 events
             .catch((error) => this.$match.innerHTML = this.textContent);
     }
 
@@ -452,126 +423,130 @@ class Match extends HTMLElement {
             return;
         }
 
+        //Creating a list of all events ids
+        const eventIds = events.map((event) => event.id);
+        //Selecting a random event id
+        const randomEventId = eventIds[Math.floor(Math.random() * eventIds.length)];
+        //Selecting the event with the random id
+        const selectedEvent = events.find((event) => event.id === randomEventId);
+
         this.$match.innerHTML = "";
 
-        events.forEach((event) => {
+        const imageLance = `https://theme.zdassets.com/theme_assets/11560444/d924dd3464cd1b98b303e3fa883cbbbd9aa9a4cd.svg`
 
-            const imageLance = `https://theme.zdassets.com/theme_assets/11560444/d924dd3464cd1b98b303e3fa883cbbbd9aa9a4cd.svg`
+        const $event = document.createElement('div');
+        $event.className = "event_data";
 
-            const $event = document.createElement('div');
-            $event.className = "event_data";
+        const $eventTest = document.createElement('div');
+        $eventTest.className = "event_test";
+        $event.appendChild($eventTest);
 
-            const $eventTest = document.createElement('div');
-            $eventTest.className = "event_test";
-            $event.appendChild($eventTest);
+        const $eventLogo = document.createElement('img');
+        $eventLogo.src = imageLance;
+        $eventLogo.className = "event_logo";
+        $eventTest.appendChild($eventLogo);
 
-            const $eventLogo = document.createElement('img');
-            $eventLogo.src = imageLance;
-            $eventLogo.className = "event_logo";
-            $eventTest.appendChild($eventLogo);
+        var localDate = new Date(selectedEvent.start);
 
+        // BR local hour correction 
+        localDate.setHours(localDate.getHours() - 5);
 
+        const day = localDate.getDate().toString().padStart(2, '0');
+        const month = (localDate.getMonth() + 1).toString().padStart(2, '0');
+        const hours = localDate.getHours().toString().padStart(2, '0');
+        const minutes = localDate.getMinutes().toString().padStart(2, '0');
 
-
-            var localDate = new Date(event.start);
-
-            // BR local hour correction 
-            localDate.setHours(localDate.getHours() - 5);
-
-            const day = localDate.getDate().toString().padStart(2, '0');
-            const month = (localDate.getMonth() + 1).toString().padStart(2, '0');
-            const hours = localDate.getHours().toString().padStart(2, '0');
-            const minutes = localDate.getMinutes().toString().padStart(2, '0');
-
-            const formattedDate = `${day}/${month} ${hours}:${minutes}`;
-
-            const $eventDate = document.createElement('div');
-            $eventDate.innerHTML = formattedDate;
-            $eventDate.className = "event_date";
-            $eventTest.appendChild($eventDate);
+        const formattedDate = `${day}/${month} ${hours}:${minutes}`;
 
 
-            event.betOffers.forEach((betOffer) => {
+        const $eventDate = document.createElement('div');
+        $eventDate.innerHTML = formattedDate;
+        $eventDate.className = "event_date";
+        $eventTest.appendChild($eventDate);
 
-                if (betOffer.betOfferType.englishName !== "Match") {
-                    return;
+
+        selectedEvent.betOffers.forEach((betOffer) => {
+
+            if (betOffer.betOfferType.englishName !== "Match") {
+                return;
+            }
+
+
+            const $betOffer = document.createElement('div');
+            $betOffer.className = "bet_offers";
+
+            betOffer.outcomes.forEach((outcome) => {
+
+                const $outcome = document.createElement('div');
+                $outcome.className = this.getOutcomeDivName(outcome);
+
+                const $outcomeName = document.createElement('div');
+                $outcomeName.className = "outcome_name";
+                const teamValue = $outcome.className === "home" ? "home" : "away";
+
+
+                const teamName = selectedEvent[`${teamValue}Name`]?.toLowerCase().replace(/\s/g, '-') || '';
+                const asciiTeamName = convertEuropeanToAscii(teamName);
+                const outcomeText = this.getOutcomeText(selectedEvent, outcome);
+                const teamPrinted = selectedEvent[`${teamValue}Name`]?.toLowerCase().replace(/\s/g, '-').replace(/-\w{2}$/, '');
+
+                const truncatedName = teamPrinted.length > 13 ? teamPrinted.substring(0, 13) + '...' : teamPrinted;
+
+                if ($outcome.className !== "draw") {
+
+                    $outcomeName.innerHTML = truncatedName;
+                } else {
+                    $outcomeName.innerHTML = `${outcomeText}`;
                 }
 
 
-                const $betOffer = document.createElement('div');
-                $betOffer.className = "bet_offers";
 
-                betOffer.outcomes.forEach((outcome) => {
+                //Home or away shirt
 
-                    const $outcome = document.createElement('div');
-                    $outcome.className = this.getOutcomeDivName(outcome);
+                const imageUrlFinal = `https://lancebet-com-prod.eyasgaming.net/content/dam/eyas-web/images/team-colours/football/${asciiTeamName}-${teamValue}.png.webp`
 
-                    const $outcomeName = document.createElement('div');
-                    $outcomeName.className = "outcome_name";
-                    const teamValue = $outcome.className === "home" ? "home" : "away";
-
-
-                    const teamName = event[`${teamValue}Name`]?.toLowerCase().replace(/\s/g, '-') || '';
-                    const asciiTeamName = convertPortugueseToAscii(teamName);
-                    const outcomeText = this.getOutcomeText(event, outcome);
-                    const teamPrinted = event[`${teamValue}Name`]?.toLowerCase().replace(/\s/g, '-').replace(/-\w{2}$/, '');
-
-                    if ($outcome.className !== "draw") {
-                        // Añadir el nombre del equipo y el salto de línea al contenido de $outcomeName
-                        $outcomeName.innerHTML = `${teamPrinted}`;
-                    } else {
-                        $outcomeName.innerHTML = `${outcomeText}`;
-                    }
+                const imageUrlFinalAux = `https://lancebet-com-prod.eyasgaming.net/content/dam/eyas-web/images/team-colours/football/generic-${teamValue}.png.webp`;
 
 
 
-                    //Home or away shirt
+                //shirts on the screen
 
-                    const imageUrlFinal = `https://lancebet-com-prod.eyasgaming.net/content/dam/eyas-web/images/team-colours/football/${asciiTeamName}-${teamValue}.png.webp`
+                if ($outcome.className !== "draw") {
+                    const $greetingDiv = document.createElement('div');
+                    $greetingDiv.className = "outcome_shirts";
+                    const $teamImage = document.createElement('img');
+                    $teamImage.src = imageUrlFinal;
+                    $teamImage.onerror = () => {
+                        // If an error exist use URL alternative
+                        $teamImage.src = imageUrlFinalAux;
+                    };
+                    $greetingDiv.appendChild($teamImage);
+                    $outcome.appendChild($greetingDiv);
 
-                    const imageUrlFinalAux = `https://lancebet-com-prod.eyasgaming.net/content/dam/eyas-web/images/team-colours/football/generic-${teamValue}.png.webp`;
-
-
-
-                    //shirts on the screen
-
-
-                    if ($outcome.className !== "draw") {
-                        const $greetingDiv = document.createElement('div');
-                        $greetingDiv.className = "outcome_shirts";
-                        const $teamImage = document.createElement('img');
-                        $teamImage.src = imageUrlFinal;
-                        $teamImage.onerror = () => {
-                            // If an error exist use URL alternative
-                            $teamImage.src = imageUrlFinalAux;
-                        };
-                        $greetingDiv.appendChild($teamImage);
-                        $outcome.appendChild($greetingDiv);
-
-                    }
+                }
 
 
-                    const $outcomeOdds = document.createElement('div');
-                    $outcomeOdds.className = "outcome_odds";
+                const $outcomeOdds = document.createElement('div');
+                $outcomeOdds.className = "outcome_odds";
 
-                    const $outcomeLink = document.createElement('a');
-                    $outcomeLink.href = this.target + "?affiliateId=" + this.affiliateId + "&coupon=single|" + outcome.id + "||append|lance";
-                    $outcomeLink.innerText = (Number(outcome.odds) / 1000).toFixed(2).toLocaleString();
-                    $outcomeLink.target = "lancebet";
+                const $outcomeLink = document.createElement('a');
+                $outcomeLink.href = this.target + "?affiliateId=" + this.affiliateId + "&coupon=single|" + outcome.id + "||append|lance";
+                $outcomeLink.innerText = (Number(outcome.odds) / 1000).toFixed(2).toLocaleString();
+                $outcomeLink.target = "lancebet";
 
 
 
 
-                    $outcomeOdds.appendChild($outcomeLink);
-                    $outcome.appendChild($outcomeName);
+                $outcomeOdds.appendChild($outcomeLink);
+                $outcome.appendChild($outcomeName);
 
-                    $outcome.appendChild($outcomeOdds);
-                    $betOffer.appendChild($outcome);
-                });
-                $event.appendChild($betOffer);
+                $outcome.appendChild($outcomeOdds);
+                $betOffer.appendChild($outcome);
             });
-            this.$match.appendChild($event);
+            $event.appendChild($betOffer);
         });
+        this.$match.appendChild($event);
+
     }
 
     renderPrice(price) {
